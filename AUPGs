@@ -960,7 +960,7 @@ do
 end
 
 do
-    local skySection = shared.AddSection("R15 FE Skybox")
+    local skySection = shared.AddSection("R15 Blind All")
     local skyId = 70883871260184
     local skyOn = false
     local skyTrack
@@ -1013,7 +1013,7 @@ do
         playSky(h)
     end
     
-    skySection:AddToggle("Enable Skybox", function(s)
+    skySection:AddToggle("Enable Blind All", function(s)
         skyOn = s
         if s then
             enSky()
