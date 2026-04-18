@@ -324,30 +324,6 @@ do
     makeEmote("84112287597268", "FD", "EmoteGUI_FakeDead")
 end
 
-local muteSection = shared.AddSection("Mute Buttons")
-muteSection:AddLabel("Turn Off and Rejoin to Enable Sounds Again")
-local muteTarget = "rbxassetid://3868133279"
-local muteEnabled = false
-local muteConns = {}
-
-local function doMute(s)
-    if s.SoundId == muteTarget then
-        s.Volume = 0
-        table.insert(muteConns, s:GetPropertyChangedSignal("Volume"):Connect(function() if muteEnabled and s.Volume > 0 then s.Volume = 0 end end))
-    end
-end
-
-muteSection:AddToggle("Disable ODH Button Sounds", function(s)
-    muteEnabled = s
-    if s then
-        for _, o in ipairs(workspace:GetDescendants()) do if o:IsA("Sound") then doMute(o) end end
-        table.insert(muteConns, workspace.DescendantAdded:Connect(function(o) if o:IsA("Sound") then doMute(o) end end))
-    else
-        for _, c in ipairs(muteConns) do c:Disconnect() end
-        table.clear(muteConns)
-    end
-end)
-
 do
     local rtxSection = shared.AddSection("RTX")
     local rtx = {Sky=nil, Blur=nil, CC=nil, Bloom=nil, Sun=nil}
