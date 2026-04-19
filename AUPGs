@@ -93,7 +93,7 @@ if not hiddenGui then
 end
 
 local aboutSection = shared.AddSection("About")
-aboutSection:AddParagraph("You Are Using", "ATAOs Universal")
+aboutSection:AddParagraph("ATAOs Universal", "is the version you are using.")
 
 local serverSection = shared.AddSection("Server Options")
 
