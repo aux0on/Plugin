@@ -1365,8 +1365,21 @@ CHKSection:AddLabel("Client Sided")
     end)
 end
 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local isR6 = false
+local c = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local h = c:WaitForChild("Humanoid", 10)
+
+if h then
+    isR6 = h.RigType == Enum.HumanoidRigType.R6
+end
+
+if isR6 then
 local creditsSection = shared.AddSection("Credits")
 creditsSection:AddParagraph("@lzzzx", "Made this plugin, if you have requests feel free to ask.")
+end
 
 local isR6 = false
 local c = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
@@ -2195,5 +2208,9 @@ do
     
     makeEmote("84112287597268", "FD", "EmoteGUI_FakeDead")
 end
+
+local creditsSection = shared.AddSection("Credits")
+creditsSection:AddParagraph("@lzzzx", "Made this plugin, if you have requests feel free to ask.")
+
 end
 end
