@@ -8,4 +8,4 @@ local thankSection = shared.AddSection("Thank You")
 
 shared.Notify("This Plugin Has Been Discontinued", 5)
 
-thankSection:AddParagraph("Thanks for using ATAOs", "I appreciate your support. Tell Elf to quit fucking with plugins & I may return, rip ATAOs. Goodbye.")
+thankSection:AddParagraph("Thanks for using ATAOs Universal", "I appreciate your support. Tell Elf to quit fucking with plugins & I may return, rip ATAOs. Goodbye.")
