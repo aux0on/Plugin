@@ -1,5 +1,9 @@
 local shared = odh_shared_plugins
 
+local _game = shared.game_name
+
+if _game ~= "Murder Mystery 2" and _game ~= "Murder Mystery Modded" then
+
 local thankSection = shared.AddSection("Thank You")
 
 shared.Notify("This Plugin Has Been Discontinued", 5)
