@@ -1268,61 +1268,102 @@ true_antis_section:AddToggle("Enable True Anti AFK", function(bool)
 end)
 
 do
-local KorbloxSection = shared.AddSection("Korblox (R6 Only)")
+    local CHKSection = shared.AddSection("Headless & Korblox")
 
-local KORBLOX_MESH_ID = "rbxassetid://101851696"
-local KORBLOX_TEXTURE_ID = "rbxassetid://101851254"
+    local KORBLOX_MESH_ID = "rbxassetid://101851696"
+    local KORBLOX_TEXTURE_ID = "rbxassetid://101851254"
 
-local korbloxMaid = nil
-RootMaid:GiveTask(function()
-    if korbloxMaid then korbloxMaid:DoCleaning() end
-end)
+    local headlessMaid = nil
+    local korbloxMaid = nil
+    RootMaid:GiveTask(function()
+        if headlessMaid then headlessMaid:DoCleaning() end
+        if korbloxMaid then korbloxMaid:DoCleaning() end
+    end)
 
-KorbloxSection:AddLabel("Client Sided")
+CHKSection:AddLabel("Client Sided")
 
-local function applyKorblox(char)
-    local rightLeg = char:FindFirstChild("Right Leg")
-    if not rightLeg then return end
-
-    for _, v in ipairs(rightLeg:GetChildren()) do
-        if v:IsA("SpecialMesh") or v:IsA("CharacterMesh") then
-            v:Destroy()
+    local function applyHeadless()
+        local char = LocalPlayer.Character
+        if not char then return end
+        local head = char:FindFirstChild("Head")
+        if not head then return end
+        head.Transparency = 1
+        for _, v in ipairs(head:GetChildren()) do
+            if v:IsA("Decal") then v.Transparency = 1 end
+            if v:IsA("SpecialMesh") then v.Scale = Vector3.new(0,0,0) end
         end
     end
 
-    local mesh = Instance.new("SpecialMesh")
-    mesh.MeshType = Enum.MeshType.FileMesh
-    mesh.MeshId = KORBLOX_MESH_ID
-    mesh.TextureId = KORBLOX_TEXTURE_ID
-    mesh.Scale = Vector3.new(1, 1, 1)
-    mesh.Parent = rightLeg
-end
-
-local function removeKorblox()
-    local char = LocalPlayer.Character
-    if not char then return end
-    local rightLeg = char:FindFirstChild("Right Leg")
-    if not rightLeg then return end
-    for _, v in ipairs(rightLeg:GetChildren()) do
-        if v:IsA("SpecialMesh") then v:Destroy() end
-    end
-end
-
-KorbloxSection:AddToggle("Korblox", function(state)
-    if korbloxMaid then korbloxMaid:DoCleaning() korbloxMaid = nil end
-    if state then
-        korbloxMaid = Maid.new()
-        if LocalPlayer.Character then
-            task.spawn(applyKorblox, LocalPlayer.Character)
+    local function removeHeadless()
+        local char = LocalPlayer.Character
+        if not char then return end
+        local head = char:FindFirstChild("Head")
+        if not head then return end
+        head.Transparency = 0
+        for _, v in ipairs(head:GetChildren()) do
+            if v:IsA("Decal") then v.Transparency = 0 end
+            if v:IsA("SpecialMesh") then v.Scale = Vector3.new(1,1,1) end
         end
-        korbloxMaid:GiveTask(LocalPlayer.CharacterAdded:Connect(function(char)
-            task.wait(1)
-            task.spawn(applyKorblox, char)
-        end))
-    else
-        removeKorblox()
     end
-end)
+
+    local function applyKorblox(char)
+        local rightLeg = char:FindFirstChild("Right Leg")
+        if not rightLeg then return end
+
+        for _, v in ipairs(rightLeg:GetChildren()) do
+            if v:IsA("SpecialMesh") or v:IsA("CharacterMesh") then
+                v:Destroy()
+            end
+        end
+
+        local mesh = Instance.new("SpecialMesh")
+        mesh.MeshType = Enum.MeshType.FileMesh
+        mesh.MeshId = KORBLOX_MESH_ID
+        mesh.TextureId = KORBLOX_TEXTURE_ID
+        mesh.Scale = Vector3.new(1, 1, 1)
+        mesh.Parent = rightLeg
+    end
+
+    local function removeKorblox()
+        local char = LocalPlayer.Character
+        if not char then return end
+        local rightLeg = char:FindFirstChild("Right Leg")
+        if not rightLeg then return end
+        for _, v in ipairs(rightLeg:GetChildren()) do
+            if v:IsA("SpecialMesh") then v:Destroy() end
+        end
+    end
+
+    CHKSection:AddToggle("Headless", function(state)
+        if headlessMaid then headlessMaid:DoCleaning() headlessMaid = nil end
+        if state then
+            headlessMaid = Maid.new()
+            applyHeadless()
+            headlessMaid:GiveTask(LocalPlayer.CharacterAdded:Connect(function()
+                task.wait(1)
+                applyHeadless()
+            end))
+        else
+            removeHeadless()
+        end
+    end)
+
+    CHKSection:AddToggle("Korblox (R6 Only)", function(state)
+        if korbloxMaid then korbloxMaid:DoCleaning() korbloxMaid = nil end
+        if state then
+            korbloxMaid = Maid.new()
+            if LocalPlayer.Character then
+                task.spawn(applyKorblox, LocalPlayer.Character)
+            end
+            korbloxMaid:GiveTask(LocalPlayer.CharacterAdded:Connect(function(char)
+                task.wait(1)
+                task.spawn(applyKorblox, char)
+            end))
+        else
+            removeKorblox()
+        end
+    end)
+end
 
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
